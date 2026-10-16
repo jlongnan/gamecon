@@ -1,4 +1,5 @@
 #include "gamecon.h"
+#include <stdio.h>
 
 enum
 {
@@ -7,9 +8,12 @@ enum
     BLOCK = 20
 };
 
-int main()
+int main(void)
 {
-    GC_Init("Game Console Sample: Display", WIDTH, HEIGHT, BLOCK);
+    if (GC_Init("Game Console Sample: Display", WIDTH, HEIGHT, BLOCK) != E_SUCCESS) {
+        fprintf(stderr, "Unable to initialize GameCon.\n");
+        return 1;
+    }
 
     int x;
     for(x = 0; x < WIDTH; ++x)

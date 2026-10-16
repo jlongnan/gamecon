@@ -1,4 +1,5 @@
 #include "gamecon.h"
+#include <stdio.h>
 
 enum
 {
@@ -7,32 +8,36 @@ enum
     BLOCK = 20
 };
 
-void draw(int x, int y);
+int draw(int x, int y);
 
-int main()
+int main(void)
 {
-    GC_Init("Game Console Sample: Animation", WIDTH, HEIGHT, BLOCK);
+    if (GC_Init("Game Console Sample: Animation", WIDTH, HEIGHT, BLOCK) != E_SUCCESS) {
+        fprintf(stderr, "Unable to initialize GameCon.\n");
+        return 1;
+    }
 
     int x;
     for(x = 0; x < WIDTH; ++x)
-        draw(x, 0);
+        if (draw(x, 0) < 0) goto cleanup;
 
     int y;
     for(y = 1; y < HEIGHT; ++y)
-        draw(WIDTH - 1, y);
+        if (draw(WIDTH - 1, y) < 0) goto cleanup;
 
     for(x = WIDTH - 2; x >= 0; --x)
-        draw(x, HEIGHT - 1);
+        if (draw(x, HEIGHT - 1) < 0) goto cleanup;
 
     for(y = HEIGHT - 2; y >= 0; --y)
-        draw(0, y);
+        if (draw(0, y) < 0) goto cleanup;
 
     GC_Sleep(0);
+cleanup:
     GC_Finalize();
     return 0;
 }
 
-void draw(int x, int y)
+int draw(int x, int y)
 {
     int i;
     for(i = 0; i < WIDTH; ++i)
@@ -44,5 +49,5 @@ void draw(int x, int y)
 
     GC_Set(x, y, 255, 255, 0);
     GC_Flip();
-    GC_Sleep(100);
+    return GC_Sleep(100);
 }

@@ -1,4 +1,5 @@
 #include "gamecon.h"
+#include <stdio.h>
 
 enum
 {
@@ -7,9 +8,12 @@ enum
     BLOCK = 20
 };
 
-int main()
+int main(void)
 {
-    GC_Init("Game Console Test", WIDTH, HEIGHT, BLOCK);
+    if (GC_Init("Game Console Test", WIDTH, HEIGHT, BLOCK) != E_SUCCESS) {
+        fprintf(stderr, "Unable to initialize GameCon.\n");
+        return 1;
+    }
 
     int px = 0;
     int py = 0;
@@ -58,7 +62,7 @@ int main()
 	}
 
 	GC_Flip();
-	GC_Sleep(0);
+	if (!stop && GC_Sleep(0) < 0) break;
     }
 
     GC_Finalize();

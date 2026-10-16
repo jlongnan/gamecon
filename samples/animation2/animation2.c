@@ -1,4 +1,5 @@
 #include "gamecon.h"
+#include <stdio.h>
 
 enum
 {
@@ -28,13 +29,16 @@ enum
     TREE_SLOWNESS = 1
 };
 
-void draw_background();
+void draw_background(void);
 void draw_cloud(int x, int y);
 void draw_tree(int x, int y);
 
-int main()
+int main(void)
 {
-    GC_Init("Game Console Sample: Animation 2", WIDTH, HEIGHT, BLOCK);
+    if (GC_Init("Game Console Sample: Animation 2", WIDTH, HEIGHT, BLOCK) != E_SUCCESS) {
+        fprintf(stderr, "Unable to initialize GameCon.\n");
+        return 1;
+    }
 
     int cloud_x[CLOUD_COUNT];
     int tree_x[TREE_COUNT];
@@ -80,7 +84,7 @@ int main()
         }
 
         GC_Flip();
-        GC_Sleep(DELAY);
+        if (GC_Sleep(DELAY) < 0) break;
     }
     while(!GC_ResetPressed());
 
@@ -88,9 +92,9 @@ int main()
     return 0;
 }
 
-void draw_background()
+void draw_background(void)
 {
-    const static char sun[SUN_HEIGHT][SUN_WIDTH] =
+    static const char sun[SUN_HEIGHT][SUN_WIDTH] =
     {
         "    *    ",
         " *  *  * ",
@@ -138,7 +142,7 @@ void draw_background()
 
 void draw_cloud(int x, int y)
 {
-    const static char cloud[CLOUD_HEIGHT][CLOUD_WIDTH] =
+    static const char cloud[CLOUD_HEIGHT][CLOUD_WIDTH] =
     {
         "        *****      ",
         "   *** *********   ",
@@ -166,7 +170,7 @@ void draw_cloud(int x, int y)
 
 void draw_tree(int x, int y)
 {
-    const static char tree[TREE_HEIGHT][TREE_WIDTH] =
+    static const char tree[TREE_HEIGHT][TREE_WIDTH] =
     {
         "     *     ",
         "    ***    ",

@@ -1,4 +1,5 @@
 #include "gamecon.h"
+#include <stdio.h>
 
 enum
 {
@@ -15,22 +16,26 @@ void clear(int r, int g, int b);
 void draw_text(int x, int y, char text[], int r, int g, int b);
 void draw_char(int x, int y, char c, int r, int g, int b);
 
-int main()
+int main(void)
 {
-    GC_Init("Game Console Sample: Text", WIDTH, HEIGHT, BLOCK);
+    if (GC_Init("Game Console Sample: Text", WIDTH, HEIGHT, BLOCK) != E_SUCCESS) {
+        fprintf(stderr, "Unable to initialize GameCon.\n");
+        return 1;
+    }
 
     clear(0, 0, 150);
     draw_text(4, 5, "The quick brown\nfox jumps over\nthe lazy dog", 255, 255, 0);
     GC_Flip();
-    GC_Sleep(0);
-    GC_Sleep(0);
+    if (GC_Sleep(0) < 0) goto cleanup;
+    if (GC_Sleep(0) < 0) goto cleanup;
 
 
     clear(0, 0, 0);
     draw_text(10, 10, "Game Over", 255, 0, 0);
     GC_Flip();
-    GC_Sleep(0);
+    if (GC_Sleep(0) < 0) goto cleanup;
 
+cleanup:
     GC_Finalize();
     return 0;
 }

@@ -1,4 +1,5 @@
 #include "gamecon.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 enum
@@ -24,12 +25,15 @@ int make_box(int boxes[MAX_BOX_COUNT][5], int count, int size);
 int check_box(int boxes[MAX_BOX_COUNT][5], int count, int i);
 int check_overlap(int box1[5], int box2[5]);
 void move(int boxes[MAX_BOX_COUNT][5], int count, int step);
-void draw_background();
+void draw_background(void);
 void draw_box(int box[5]);
 
-int main()
+int main(void)
 {
-    GC_Init("Game Console Sample: Animation 2", WIDTH, HEIGHT, BLOCK);
+    if (GC_Init("Game Console Sample: Animation 3", WIDTH, HEIGHT, BLOCK) != E_SUCCESS) {
+        fprintf(stderr, "Unable to initialize GameCon.\n");
+        return 1;
+    }
 
     int boxes[MAX_BOX_COUNT][5];
     int count = 0;
@@ -64,7 +68,7 @@ int main()
         move(boxes, count, step);
 
         GC_Flip();
-        GC_Sleep(DELAY);
+        if (GC_Sleep(DELAY) < 0) break;
     }
     while(!GC_ResetPressed());
 
@@ -194,7 +198,7 @@ void move(int boxes[MAX_BOX_COUNT][5], int count, int step)
     }
 }
 
-void draw_background()
+void draw_background(void)
 {
     // Black background
     //

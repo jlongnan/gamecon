@@ -1,0 +1,22 @@
+name: Windows build and regression tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  mingw:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            make
+            mingw-w64-ucrt-x86_64-gcc
+      - run: make all CC=gcc AR=ar CFLAGS='-std=c99 -Wall -Wextra -Werror -Wstrict-prototypes -O2'
+      - run: make test
+        timeout-minutes: 3
